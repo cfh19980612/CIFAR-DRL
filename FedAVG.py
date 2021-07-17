@@ -288,4 +288,4 @@ if __name__ == '__main__':
     if len(sys.argv) == 3:
         network = float(sys.argv[3])
         run(dataset = 'CIFAR10', net = network, client = 1, batchsize = 128, epoch = 1)
-    elif run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
+    elif: run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
