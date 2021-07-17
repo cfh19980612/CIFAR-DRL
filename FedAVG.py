@@ -121,6 +121,20 @@ def Set_model(net, client, args):
                         momentum=0.9, weight_decay=5e-4)
         global_model = ResNet18()
         return Model, global_model, Optimizer
+    elif net == 'ResNet50':
+        for i in range (client):
+            Model = ResNet50()
+            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+                        momentum=0.9, weight_decay=5e-4)
+        global_model = ResNet50()
+        return Model, global_model, Optimizer
+    elif net == 'ResNet101':
+        for i in range (client):
+            Model = ResNet101()
+            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+                        momentum=0.9, weight_decay=5e-4)
+        global_model = ResNet101()
+        return Model, global_model, Optimizer
 
 def Train(model, optimizer, client, trainloader):
     print('==> Training model..')
@@ -270,6 +284,8 @@ def run(dataset, net, client, batchsize, epoch):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
-    run(dataset = 'CIFAR10', net = 'ResNet18', client = 1, batchsize = 128, epoch = 1)
-    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
+    for i in range (100):
+        if i%4 == 0: run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
+        elif i%4 == 1: run(dataset = 'CIFAR10', net = 'ResNet18', client = 1, batchsize = 128, epoch = 1)
+        elif i%4 == 2: run(dataset = 'CIFAR10', net = 'ResNet50', client = 1, batchsize = 128, epoch = 1)
+        elif i%4 == 3: run(dataset = 'CIFAR10', net = 'ResNet101', client = 1, batchsize = 128, epoch = 1)
