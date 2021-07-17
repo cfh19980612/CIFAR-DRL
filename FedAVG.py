@@ -260,6 +260,7 @@ def run(dataset, net, client, batchsize, epoch):
     start_time = 0
     # for i in pbar:
     Train(model, optimizer, client, trainloader)
+
     torch.cuda.empty_cache()
     # Temp, process_time = Train(model, optimizer, client, trainloader)
         # for j in range (client):
@@ -284,8 +285,7 @@ def run(dataset, net, client, batchsize, epoch):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    for i in range (100):
-        if i%4 == 0: run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
-        elif i%4 == 1: run(dataset = 'CIFAR10', net = 'ResNet18', client = 1, batchsize = 128, epoch = 1)
-        elif i%4 == 2: run(dataset = 'CIFAR10', net = 'ResNet50', client = 1, batchsize = 128, epoch = 1)
-        elif i%4 == 3: run(dataset = 'CIFAR10', net = 'ResNet101', client = 1, batchsize = 128, epoch = 1)
+    if len(sys.argv) == 3:
+        network = float(sys.argv[3])
+        run(dataset = 'CIFAR10', net = network, client = 1, batchsize = 128, epoch = 1)
+    elif run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
