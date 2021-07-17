@@ -158,6 +158,7 @@ def Train(model, optimizer, client, trainloader):
 
                 batch_end = time.time()
                 Batch_time.append(batch_end - batch_start)
+    model.cpu()
     ###############################################
     # criterion = nn.CrossEntropyLoss().to(device)
     # #print(next(model[0].parameters()).is_cuda)
@@ -194,7 +195,7 @@ def Train(model, optimizer, client, trainloader):
     #             batch_end = time.time()
     #             Batch_time.append(batch_end - batch_start)
 
-    time_end = time.time()
+    # time_end = time.time()
 
     # if device == 'cuda':
     #     for i in range (client):
