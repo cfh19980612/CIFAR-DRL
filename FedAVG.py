@@ -258,7 +258,7 @@ def run(dataset, client, net):
     # pbar = tqdm(range(args.epoch))
     start_time = 0
     # for i in pbar:
-    Train(model, optimizer, client, trainloader)
+    return model, optimizer, trainloader, client
 
     # Temp, process_time = Train(model, optimizer, client, trainloader)
         # for j in range (client):
@@ -283,18 +283,29 @@ def run(dataset, client, net):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    for i in range (10):
+    step = 10
+    Model = [None for i in range (step)]
+    Trainloader = [None for i in range (step)]
+    Optimizer = [None for i in range (step)]
+    Client = [None for i in range (step)]
+    for i in range (step):
+        if i%4 == 0: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+        elif i%4 == 1: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
+        elif i%4 == 2: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'ResNet50')
+        elif i%4 == 3: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+
+    for i in range (step):
         if i%4 == 0: 
-            run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+            Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
             torch.cuda.empty_cache()
         elif i%4 == 1: 
-            run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
+            Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
             torch.cuda.empty_cache()
         elif i%4 == 2: 
-            run(dataset = 'CIFAR10', client = 1, net = 'ResNet50')
+            Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
             torch.cuda.empty_cache()
         elif i%4 == 3: 
-            run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+            Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
             torch.cuda.empty_cache()
 
 
