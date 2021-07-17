@@ -34,9 +34,9 @@ def parseProcessMem(str_content, process_name):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        print("Please input process name to monitor.\nExample: python GPULogger.py target_name")
-        exit()
+    # if len(sys.argv) == 1:
+    #     print("Please input process name to monitor.\nExample: python GPULogger.py target_name")
+    #     exit()
     
     str_command = "nvidia-smi"  # 需要执行的命令
     # process_name = sys.argv[1]  # 待监控的进程名称
