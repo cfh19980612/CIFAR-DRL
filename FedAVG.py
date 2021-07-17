@@ -285,3 +285,7 @@ def run(dataset, client):
 if __name__ == '__main__':
     run(dataset = 'CIFAR10', client = 1)
     torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
