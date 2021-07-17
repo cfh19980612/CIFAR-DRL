@@ -241,14 +241,14 @@ def Aggregate(model, client):
     return P[0]
 
 
-def run(dataset, client):
+def run(dataset, client, net):
     parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
     parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
     parser.add_argument('--resume', '-r', action='store_true',
                         help='resume from checkpoint')
     parser.add_argument('--b',default=128,type=int,help='batch_size')
-    parser.add_argument('--e',default=200,type=int,help='epoch')
-    parser.add_argument('--net', default='MobileNet',type=str,help='Net')
+    parser.add_argument('--e',default=1,type=int,help='epoch')
+    parser.add_argument('--net', default=net,type=str,help='Net')
     args = parser.parse_args()
 
 
@@ -283,9 +283,10 @@ def run(dataset, client):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    run(dataset = 'CIFAR10', client = 1)
-    torch.cuda.empty_cache()
-    torch.cuda.empty_cache()
-    torch.cuda.empty_cache()
-    torch.cuda.empty_cache()
-    torch.cuda.empty_cache()
+    for i in range (10):
+        if i%4 = 0: run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+        elif i%4 = 1: run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
+        elif i%4 = 2: run(dataset = 'CIFAR10', client = 1, net = 'ResNet50')
+        elif i%4 = 3: run(dataset = 'CIFAR10', client = 1, net = 'ResNet101')
+
+
