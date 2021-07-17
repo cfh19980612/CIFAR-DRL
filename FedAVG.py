@@ -48,7 +48,7 @@ def Set_dataset(dataset, args):
         testset = torchvision.datasets.CIFAR10(
             root='/home/ICDCS/cifar-10-batches-py/', train=False, download=True, transform=transform_test)
         testloader = torch.utils.data.DataLoader(
-            testset, batch_size=arg.b, shuffle=False, num_workers=2)
+            testset, batch_size=args.b, shuffle=False, num_workers=2)
 
         classes = ('plane', 'car', 'bird', 'cat', 'deer',
                 'dog', 'frog', 'horse', 'ship', 'truck')
