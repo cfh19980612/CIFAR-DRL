@@ -80,7 +80,7 @@ def Set_dataset(dataset, args):
         testloader = torch.utils.data.DataLoader(dataset=testset,
                                             batch_size = 64,
                                             shuffle = False)
-        return args, trainloader, testloader
+        return trainloader, testloader
     else:
         print ('Data load error!')
         return 0
@@ -253,7 +253,7 @@ def run(dataset, client):
 
 
     X, Y, Z = [], [], []
-    args, trainloader, testloader = Set_dataset(dataset, args)
+    trainloader, testloader = Set_dataset(dataset, args)
     model, global_model, optimizer = Set_model(client, args)
     # pbar = tqdm(range(args.epoch))
     start_time = 0
