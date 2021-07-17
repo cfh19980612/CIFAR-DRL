@@ -159,7 +159,6 @@ def Train(model, optimizer, client, trainloader):
 
                 batch_end = time.time()
                 Batch_time.append(batch_end - batch_start)
-                torch.cuda.empty_cache()
             else:
                 torch.cuda.empty_cache() 
                 break
