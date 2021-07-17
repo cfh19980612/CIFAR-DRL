@@ -291,8 +291,8 @@ if __name__ == '__main__':
     for i in range (step):
         if i%4 == 0: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
         elif i%4 == 1: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
-        elif i%4 == 2: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'ResNet50')
-        elif i%4 == 3: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+        elif i%4 == 2: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+        elif i%4 == 3: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
 
     for i in range (step):
         if i%4 == 0: 
