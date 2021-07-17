@@ -1,4 +1,4 @@
-from vgg import *
+from .vgg import *
 from .dpn import *
 from .lenet import *
 from .senet import *
