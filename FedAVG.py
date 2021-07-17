@@ -123,6 +123,7 @@ def Set_model(net, client, args):
         return Model, global_model, Optimizer
 
 def Train(model, optimizer, client, trainloader):
+    print('==> Training model..')
     criterion = nn.CrossEntropyLoss().to(device)
     #print(next(model[0].parameters()).is_cuda)
     # cpu ? gpu
