@@ -205,21 +205,21 @@ def run(dataset, net, client, batchsize, epoch):
     X, Y, Z = [], [], []
     args, trainloader, testloader = Set_dataset(dataset, batchsize, epoch)
     model, global_model, optimizer = Set_model(net, client, args)
-    pbar = tqdm(range(args.epoch))
+    # pbar = tqdm(range(args.epoch))
     start_time = 0
-    for i in pbar:
-        Temp, process_time = Train(model, optimizer, client, trainloader)
-        for j in range (client):
-            model[j].load_state_dict(Temp[j])
-        global_model.load_state_dict(Aggregate(copy.deepcopy(model), client))
-        acc, loss = Test(global_model, testloader)
-        pbar.set_description("Epoch: %d Accuracy: %.3f Loss: %.3f Time: %.3f" %(i, acc, loss, start_time))
-        for j in range (client):
-            model[j].load_state_dict(global_model.state_dict())
-        start_time += process_time
-        X.append(start_time)
-        Y.append(acc)
-        Z.append(loss)
+    # for i in pbar:
+    Temp, process_time = Train(model, optimizer, client, trainloader)
+        # for j in range (client):
+        #     model[j].load_state_dict(Temp[j])
+        # global_model.load_state_dict(Aggregate(copy.deepcopy(model), client))
+        # acc, loss = Test(global_model, testloader)
+        # pbar.set_description("Epoch: %d Accuracy: %.3f Loss: %.3f Time: %.3f" %(i, acc, loss, start_time))
+        # for j in range (client):
+        #     model[j].load_state_dict(global_model.state_dict())
+        # start_time += process_time
+        # X.append(start_time)
+        # Y.append(acc)
+        # Z.append(loss)
     # location_acc = '/home/cifar-gcn-drl/Test_data/FedAVG_ACC.csv'
     # dataframe_1 = pd.DataFrame(X, columns=['X'])
     # dataframe_1 = pd.concat([dataframe_1, pd.DataFrame(Y,columns=['Y'])],axis=1)
