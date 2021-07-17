@@ -6,7 +6,7 @@ import sys
 # 获取显存使用情况
 def parseGPUMem(str_content):
     lines = str_content.split("\n")
-    target_line = lines[8]
+    target_line = lines[9]
     mem_part = target_line.split("|")[2]
     use_mem = mem_part.split("/")[0]
     total_mem = mem_part.split("/")[1]
@@ -17,7 +17,7 @@ def parseGPUMem(str_content):
 # 获取GPU使用情况
 def parseGPUUseage(str_content):
     lines = str_content.split("\n")
-    target_line = lines[7]
+    target_line = lines[9]
     print(target_line)
     useage_part = int(target_line.split("|")[3].split("%")[0])
     return useage_part
