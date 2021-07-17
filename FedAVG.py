@@ -246,6 +246,7 @@ def run(dataset, net, client, batchsize, epoch):
     start_time = 0
     # for i in pbar:
     Train(model, optimizer, client, trainloader)
+    torch.cuda.empty_cache()
     # Temp, process_time = Train(model, optimizer, client, trainloader)
         # for j in range (client):
         #     model[j].load_state_dict(Temp[j])
