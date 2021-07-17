@@ -23,14 +23,8 @@ from models import *
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-def Set_dataset(dataset, batchsize, epoch):
+def Set_dataset(dataset, args):
     if dataset == 'CIFAR10':
-        parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-        parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
-        parser.add_argument('--resume', '-r', action='store_true',
-                            help='resume from checkpoint')
-        parser.add_argument('--epoch',default=epoch,type=int,help='epoch')
-        args = parser.parse_args()
 
         # Data
         print('==> Preparing data..')
@@ -49,24 +43,18 @@ def Set_dataset(dataset, batchsize, epoch):
         trainset = torchvision.datasets.CIFAR10(
             root='/home/ICDCS/cifar-10-batches-py/', train=True, download=True, transform=transform_train)
         trainloader = torch.utils.data.DataLoader(
-            trainset, batch_size=batchsize, shuffle=True, num_workers=2)
+            trainset, batch_size=args.b, shuffle=True, num_workers=2)
 
         testset = torchvision.datasets.CIFAR10(
             root='/home/ICDCS/cifar-10-batches-py/', train=False, download=True, transform=transform_test)
         testloader = torch.utils.data.DataLoader(
-            testset, batch_size=batchsize, shuffle=False, num_workers=2)
+            testset, batch_size=arg.b, shuffle=False, num_workers=2)
 
         classes = ('plane', 'car', 'bird', 'cat', 'deer',
                 'dog', 'frog', 'horse', 'ship', 'truck')
 
-        return args, trainloader, testloader
+        return trainloader, testloader
     elif dataset == 'MNIST':
-        parser = argparse.ArgumentParser(description='PyTorch MNIST Training')
-        parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
-        parser.add_argument('--resume', '-r', action='store_true',
-                            help='resume from checkpoint')
-        parser.add_argument('--epoch',default=epoch,type=int,help='epoch')
-        args = parser.parse_args()
 
         # Data
         print('==> Preparing data..')
@@ -97,39 +85,39 @@ def Set_dataset(dataset, batchsize, epoch):
         print ('Data load error!')
         return 0
 
-def Set_model(net, client, args):
+def Set_model(client, args):
     print('==> Building model..')
     # Model = [None for i in range (client)]
     # Optimizer = [None for i in range (client)]
-    if net == 'MNISTNet':
+    if args.net == 'MNISTNet':
         for i in range (client):
             Model[i] = MNISTNet()
             Optimizer[i] = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
         global_model = MNISTNet()
         return Model, global_model, Optimizer
-    elif net == 'MobileNet':
+    elif args.net == 'MobileNet':
         for i in range (client):
             Model = MobileNet()
             Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
                         momentum=0.9, weight_decay=5e-4)
         global_model = MobileNet()
         return Model, global_model, Optimizer
-    elif net == 'ResNet18':
+    elif args.net == 'ResNet18':
         for i in range (client):
             Model = ResNet18()
             Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
                         momentum=0.9, weight_decay=5e-4)
         global_model = ResNet18()
         return Model, global_model, Optimizer
-    elif net == 'ResNet50':
+    elif args.net == 'ResNet50':
         for i in range (client):
             Model = ResNet50()
             Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
                         momentum=0.9, weight_decay=5e-4)
         global_model = ResNet50()
         return Model, global_model, Optimizer
-    elif net == 'ResNet101':
+    elif args.net == 'ResNet101':
         for i in range (client):
             Model = ResNet101()
             Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
@@ -155,7 +143,7 @@ def Train(model, optimizer, client, trainloader):
     Batch_time = []
     for batch_idx, (inputs, targets) in enumerate(trainloader):
     
-            if batch_idx < 100:
+            if batch_idx < 10:
 
                 batch_start = time.time()
                 inputs, targets = inputs.to(device), targets.to(device)
@@ -253,10 +241,20 @@ def Aggregate(model, client):
     return P[0]
 
 
-def run(dataset, net, client, batchsize, epoch):
+def run(dataset, client):
+    parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
+    parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
+    parser.add_argument('--resume', '-r', action='store_true',
+                        help='resume from checkpoint')
+    parser.add_argument('--b',default=128,type=int,help='batch_size')
+    parser.add_argument('--e',default=200,type=int,help='epoch')
+    parser.add_argument('--net', default='MobileNet',type=str,help='Net')
+    args = parser.parse_args()
+
+
     X, Y, Z = [], [], []
-    args, trainloader, testloader = Set_dataset(dataset, batchsize, epoch)
-    model, global_model, optimizer = Set_model(net, client, args)
+    args, trainloader, testloader = Set_dataset(dataset, args)
+    model, global_model, optimizer = Set_model(client, args)
     # pbar = tqdm(range(args.epoch))
     start_time = 0
     # for i in pbar:
@@ -286,7 +284,4 @@ def run(dataset, net, client, batchsize, epoch):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    if len(sys.argv) == 3:
-        network = float(sys.argv[3])
-        run(dataset = 'CIFAR10', net = network, client = 1, batchsize = 128, epoch = 1)
-    else: run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
+    run(dataset = 'CIFAR10', client = 1)
