@@ -285,9 +285,17 @@ def run(dataset, client, net):
 
 if __name__ == '__main__':
     for i in range (10):
-        if i%4 == 0: run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
-        elif i%4 == 1: run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
-        elif i%4 == 2: run(dataset = 'CIFAR10', client = 1, net = 'ResNet50')
-        elif i%4 == 3: run(dataset = 'CIFAR10', client = 1, net = 'ResNet101')
+        if i%4 == 0: 
+            run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+            torch.cuda.empty_cache()
+        elif i%4 == 1: 
+            run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
+            torch.cuda.empty_cache()
+        elif i%4 == 2: 
+            run(dataset = 'CIFAR10', client = 1, net = 'ResNet50')
+            torch.cuda.empty_cache()
+        elif i%4 == 3: 
+            run(dataset = 'CIFAR10', client = 1, net = 'ResNet101')
+            torch.cuda.empty_cache()
 
 
