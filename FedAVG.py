@@ -295,7 +295,7 @@ if __name__ == '__main__':
             run(dataset = 'CIFAR10', client = 1, net = 'ResNet50')
             torch.cuda.empty_cache()
         elif i%4 == 3: 
-            run(dataset = 'CIFAR10', client = 1, net = 'ResNet101')
+            run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
             torch.cuda.empty_cache()
 
 
