@@ -137,11 +137,14 @@ def Train(model, optimizer, client, trainloader):
     total = [0 for i in range (client)]
     Loss = [0 for i in range (client)]
     time_start = time.time()
+    Batch_time = []
     for batch_idx, (inputs, targets) in enumerate(trainloader):
-            if batch_idx < 360:
+            if batch_idx < 1:
+
+                batch_start = time.time()
+
                 idx = (batch_idx % client)
                 model[idx].train()
-                inputs, targets = inputs.to(device), targets.to(device)
                 optimizer[idx].zero_grad()
                 outputs = model[idx](inputs)
                 Loss[idx] = criterion(outputs, targets)
@@ -151,7 +154,12 @@ def Train(model, optimizer, client, trainloader):
                 _, predicted = outputs.max(1)
                 total[idx] += targets.size(0)
                 correct[idx] += predicted.eq(targets).sum().item()
+
+                batch_end = time.time()
+                Batch_time.append(batch_end - batch_start)
+
     time_end = time.time()
+
     if device == 'cuda':
         for i in range (client):
             model[i].cpu()
@@ -212,15 +220,17 @@ def run(dataset, net, client):
         X.append(start_time)
         Y.append(acc)
         Z.append(loss)
-    location_acc = '/home/cifar-gcn-drl/Test_data/FedAVG_ACC.csv'
-    dataframe_1 = pd.DataFrame(X, columns=['X'])
-    dataframe_1 = pd.concat([dataframe_1, pd.DataFrame(Y,columns=['Y'])],axis=1)
-    dataframe_1.to_csv(location_acc,mode = 'w', header = False,index=False,sep=',')
+    # location_acc = '/home/cifar-gcn-drl/Test_data/FedAVG_ACC.csv'
+    # dataframe_1 = pd.DataFrame(X, columns=['X'])
+    # dataframe_1 = pd.concat([dataframe_1, pd.DataFrame(Y,columns=['Y'])],axis=1)
+    # dataframe_1.to_csv(location_acc,mode = 'w', header = False,index=False,sep=',')
 
-    location_loss = '/home/cifar-gcn-drl/Test_data/FedAVG_LOSS.csv'
-    dataframe = pd.DataFrame(X, columns=['X'])
-    dataframe = pd.concat([dataframe, pd.DataFrame(Z,columns=['Z'])],axis=1)
-    dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
+    # location_loss = '/home/cifar-gcn-drl/Test_data/FedAVG_LOSS.csv'
+    # dataframe = pd.DataFrame(X, columns=['X'])
+    # dataframe = pd.concat([dataframe, pd.DataFrame(Z,columns=['Z'])],axis=1)
+    # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    run(dataset = 'CIFAR10', net = 'MobileNet', client = 10)
+    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1)
+    run(dataset = 'CIFAR10', net = 'ResNet18', client = 1)
+    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1)
