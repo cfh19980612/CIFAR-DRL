@@ -42,16 +42,16 @@ if __name__ == '__main__':
     # process_name = sys.argv[1]  # 待监控的进程名称
 
     # 如果指定了输出路径和名称，就用输入的，否则自动生成Log文件保存的路径
-    if len(sys.argv) == 3:
-        out_path = sys.argv[2]
-    else:
-        out_path = "/home/multi-ML/GPU_stat"+".txt"
+    # if len(sys.argv) == 3:
+    #     out_path = sys.argv[2]
+    # else:
+    out_path = "/home/multi-ML/GPU_stat"+".txt"
 
     # 监控的时间间隔，如果没有输入，就默认0.5秒记录一次
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 3:
         time_interval = float(sys.argv[3])
     else:
-        time_interval = 0.5
+        time_interval = 0.01
 
     fout = open(out_path, "w")
     fout.write("Timestamp\tGPU Usage Percentage\tGPU Total Mem Usage\tGPU Total Mem Usage Percentage\tProcess Mem Usage\n")
