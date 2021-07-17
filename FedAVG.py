@@ -142,7 +142,7 @@ def Train(model, optimizer, client, trainloader):
     time_start = time.time()
     Batch_time = []
     for batch_idx, (inputs, targets) in enumerate(trainloader):
-            if batch_idx < 10:
+            if batch_idx < 1:
                 batch_start = time.time()
                 inputs, targets = inputs.to(device), targets.to(device)
                 idx = (batch_idx % client)
@@ -160,7 +160,6 @@ def Train(model, optimizer, client, trainloader):
                 batch_end = time.time()
                 Batch_time.append(batch_end - batch_start)
             else:
-                torch.cuda.empty_cache() 
                 break
     ###############################################
     # criterion = nn.CrossEntropyLoss().to(device)
@@ -283,7 +282,7 @@ def run(dataset, client, net):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    step = 10
+    step = 100
     # with optimization
 
     Model = [None for i in range (step)]
