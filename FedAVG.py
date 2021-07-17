@@ -22,13 +22,13 @@ from models import *
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-def Set_dataset(dataset):
+def Set_dataset(dataset, batchsize, epoch):
     if dataset == 'CIFAR10':
         parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
         parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
         parser.add_argument('--resume', '-r', action='store_true',
                             help='resume from checkpoint')
-        parser.add_argument('--epoch',default=100,type=int,help='epoch')
+        parser.add_argument('--epoch',default=epoch,type=int,help='epoch')
         args = parser.parse_args()
 
         # Data
@@ -48,12 +48,12 @@ def Set_dataset(dataset):
         trainset = torchvision.datasets.CIFAR10(
             root='/home/ICDCS/cifar-10-batches-py/', train=True, download=True, transform=transform_train)
         trainloader = torch.utils.data.DataLoader(
-            trainset, batch_size=128, shuffle=True, num_workers=2)
+            trainset, batch_size=batchsize, shuffle=True, num_workers=2)
 
         testset = torchvision.datasets.CIFAR10(
             root='/home/ICDCS/cifar-10-batches-py/', train=False, download=True, transform=transform_test)
         testloader = torch.utils.data.DataLoader(
-            testset, batch_size=100, shuffle=False, num_workers=2)
+            testset, batch_size=batchsize, shuffle=False, num_workers=2)
 
         classes = ('plane', 'car', 'bird', 'cat', 'deer',
                 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -64,7 +64,7 @@ def Set_dataset(dataset):
         parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
         parser.add_argument('--resume', '-r', action='store_true',
                             help='resume from checkpoint')
-        parser.add_argument('--epoch',default=100,type=int,help='epoch')
+        parser.add_argument('--epoch',default=epoch,type=int,help='epoch')
         args = parser.parse_args()
 
         # Data
@@ -201,9 +201,9 @@ def Aggregate(model, client):
     return P[0]
 
 
-def run(dataset, net, client):
+def run(dataset, net, client, batchsize, epoch):
     X, Y, Z = [], [], []
-    args, trainloader, testloader = Set_dataset(dataset)
+    args, trainloader, testloader = Set_dataset(dataset, batchsize, epoch)
     model, global_model, optimizer = Set_model(net, client, args)
     pbar = tqdm(range(args.epoch))
     start_time = 0
@@ -231,6 +231,6 @@ def run(dataset, net, client):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1)
-    run(dataset = 'CIFAR10', net = 'ResNet18', client = 1)
-    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1)
+    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
+    run(dataset = 'CIFAR10', net = 'ResNet18', client = 1, batchsize = 128, epoch = 1)
+    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1, batchsize = 128, epoch = 1)
