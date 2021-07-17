@@ -98,8 +98,8 @@ def Set_dataset(dataset, batchsize, epoch):
 
 def Set_model(net, client, args):
     print('==> Building model..')
-    Model = [None for i in range (client)]
-    Optimizer = [None for i in range (client)]
+    # Model = [None for i in range (client)]
+    # Optimizer = [None for i in range (client)]
     if net == 'MNISTNet':
         for i in range (client):
             Model[i] = MNISTNet()
@@ -109,15 +109,15 @@ def Set_model(net, client, args):
         return Model, global_model, Optimizer
     elif net == 'MobileNet':
         for i in range (client):
-            Model[i] = MobileNet()
-            Optimizer[i] = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+            Model = MobileNet()
+            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
                         momentum=0.9, weight_decay=5e-4)
         global_model = MobileNet()
         return Model, global_model, Optimizer
     elif net == 'ResNet18':
         for i in range (client):
-            Model[i] = ResNet18()
-            Optimizer[i] = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+            Model = ResNet18()
+            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
                         momentum=0.9, weight_decay=5e-4)
         global_model = ResNet18()
         return Model, global_model, Optimizer
@@ -126,47 +126,82 @@ def Train(model, optimizer, client, trainloader):
     criterion = nn.CrossEntropyLoss().to(device)
     #print(next(model[0].parameters()).is_cuda)
     # cpu ? gpu
-    for i in range(client):
-        model[i] = model[i].to(device)
+
+    model = model.to(device)
     P = [None for i in range (client)]
 
     # share a common dataset
-    train_loss = [0 for i in range (client)]
-    correct = [0 for i in range (client)]
-    total = [0 for i in range (client)]
-    Loss = [0 for i in range (client)]
+    train_loss = 0
+    correct = 0
+    total = 0
+    Loss = 0
     time_start = time.time()
     Batch_time = []
     for batch_idx, (inputs, targets) in enumerate(trainloader):
     
-            if batch_idx < 1:
+            if batch_idx < 100:
 
                 batch_start = time.time()
                 inputs, targets = inputs.to(device), targets.to(device)
                 idx = (batch_idx % client)
-                model[idx].train()
-                optimizer[idx].zero_grad()
-                outputs = model[idx](inputs)
-                Loss[idx] = criterion(outputs, targets)
-                Loss[idx].backward()
-                optimizer[idx].step()
-                train_loss[idx] += Loss[idx].item()
+                model.train()
+                optimizer.zero_grad()
+                outputs = model(inputs)
+                Loss = criterion(outputs, targets)
+                Loss.backward()
+                optimizer.step()
+                train_loss += Loss.item()
                 _, predicted = outputs.max(1)
-                total[idx] += targets.size(0)
-                correct[idx] += predicted.eq(targets).sum().item()
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
 
                 batch_end = time.time()
                 Batch_time.append(batch_end - batch_start)
+    ###############################################
+    # criterion = nn.CrossEntropyLoss().to(device)
+    # #print(next(model[0].parameters()).is_cuda)
+    # # cpu ? gpu
+    # for i in range(client):
+    #     model[i] = model[i].to(device)
+    # P = [None for i in range (client)]
+
+    # # share a common dataset
+    # train_loss = [0 for i in range (client)]
+    # correct = [0 for i in range (client)]
+    # total = [0 for i in range (client)]
+    # Loss = [0 for i in range (client)]
+    # time_start = time.time()
+    # Batch_time = []
+    # for batch_idx, (inputs, targets) in enumerate(trainloader):
+    
+    #         if batch_idx < 100:
+
+    #             batch_start = time.time()
+    #             inputs, targets = inputs.to(device), targets.to(device)
+    #             idx = (batch_idx % client)
+    #             model[idx].train()
+    #             optimizer[idx].zero_grad()
+    #             outputs = model[idx](inputs)
+    #             Loss[idx] = criterion(outputs, targets)
+    #             Loss[idx].backward()
+    #             optimizer[idx].step()
+    #             train_loss[idx] += Loss[idx].item()
+    #             _, predicted = outputs.max(1)
+    #             total[idx] += targets.size(0)
+    #             correct[idx] += predicted.eq(targets).sum().item()
+
+    #             batch_end = time.time()
+    #             Batch_time.append(batch_end - batch_start)
 
     time_end = time.time()
 
-    if device == 'cuda':
-        for i in range (client):
-            model[i].cpu()
-    for i in range (client):
-        P[i] = copy.deepcopy(model[i].state_dict())
+    # if device == 'cuda':
+    #     for i in range (client):
+    #         model[i].cpu()
+    # for i in range (client):
+    #     P[i] = copy.deepcopy(model[i].state_dict())
 
-    return P, (time_end-time_start)
+    # return P, (time_end-time_start)
 
 def Test(model, testloader):
     # cpu ? gpu
@@ -208,7 +243,8 @@ def run(dataset, net, client, batchsize, epoch):
     # pbar = tqdm(range(args.epoch))
     start_time = 0
     # for i in pbar:
-    Temp, process_time = Train(model, optimizer, client, trainloader)
+    Train(model, optimizer, client, trainloader)
+    # Temp, process_time = Train(model, optimizer, client, trainloader)
         # for j in range (client):
         #     model[j].load_state_dict(Temp[j])
         # global_model.load_state_dict(Aggregate(copy.deepcopy(model), client))
