@@ -142,9 +142,7 @@ def Train(model, optimizer, client, trainloader):
     time_start = time.time()
     Batch_time = []
     for batch_idx, (inputs, targets) in enumerate(trainloader):
-    
             if batch_idx < 10:
-
                 batch_start = time.time()
                 inputs, targets = inputs.to(device), targets.to(device)
                 idx = (batch_idx % client)
@@ -161,7 +159,10 @@ def Train(model, optimizer, client, trainloader):
 
                 batch_end = time.time()
                 Batch_time.append(batch_end - batch_start)
-    model.cpu()
+                torch.cuda.empty_cache()
+            else:
+                torch.cuda.empty_cache() 
+                break
     ###############################################
     # criterion = nn.CrossEntropyLoss().to(device)
     # #print(next(model[0].parameters()).is_cuda)
