@@ -338,8 +338,8 @@ if __name__ == '__main__':
         j = random.randint(0,6)
         if j == 1: network = 'vgg'
         elif j == 2: network = 'resnet18'
-        elif j == 3: network = 'resnet50'
-        elif j == 4: network = 'resnet101'
+        # elif j == 3: network = 'resnet50'
+        # elif j == 4: network = 'resnet101'
         elif j == 5: network = 'inception3'
         elif j == 6: network = 'mobilenet'
         Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = network)
