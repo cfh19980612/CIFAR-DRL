@@ -21,7 +21,7 @@ import sys
 from tqdm import tqdm, trange
 from models import *
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cuda0' if torch.cuda.is_available() else 'cpu'
 
 def Set_dataset(dataset, args):
     if dataset == 'CIFAR10':
@@ -89,41 +89,86 @@ def Set_model(client, args):
     print('==> Building model..')
     # Model = [None for i in range (client)]
     # Optimizer = [None for i in range (client)]
-    if args.net == 'MNISTNet':
-        for i in range (client):
-            Model[i] = MNISTNet()
-            Optimizer[i] = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+    if(args.net == 'vgg'):
+        model = vgg.vgg19_bn()
+        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
-        global_model = MNISTNet()
-        return Model, global_model, Optimizer
-    elif args.net == 'MobileNet':
-        for i in range (client):
-            Model = MobileNet()
-            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
-                        momentum=0.9, weight_decay=5e-4)
-        global_model = MobileNet()
-        return Model, global_model, Optimizer
-    elif args.net == 'ResNet18':
-        for i in range (client):
-            Model = ResNet18()
-            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
-                        momentum=0.9, weight_decay=5e-4)
-        global_model = ResNet18()
-        return Model, global_model, Optimizer
-    elif args.net == 'ResNet50':
-        for i in range (client):
-            Model = ResNet50()
-            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
-                        momentum=0.9, weight_decay=5e-4)
-        global_model = ResNet50()
-        return Model, global_model, Optimizer
-    elif args.net == 'ResNet101':
-        for i in range (client):
-            Model = ResNet101()
-            Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
-                        momentum=0.9, weight_decay=5e-4)
-        global_model = ResNet101()
-        return Model, global_model, Optimizer
+        return model, optimizer
+    if(args.net == 'resnet101'):
+        model = resnet.resnet101()
+        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+                            momentum=0.9, weight_decay=5e-4)
+        return model, optimizer
+    if(args.net == 'resnet18'):
+        model = resnet.resnet18()
+        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+                            momentum=0.9, weight_decay=5e-4)
+        return model, optimizer
+    if(args.net == 'resnet50'):
+        model = resnet.resnet50()
+        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+                            momentum=0.9, weight_decay=5e-4)
+        return model, optimizer
+    if(args.net == 'inception3'):
+        model = inceptionv3.inceptionv3()
+        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+                            momentum=0.9, weight_decay=5e-4)
+        return model, optimizer
+    if(args.net == 'mobilenet'):
+        model = mobilenet.mobilenet()
+        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+                            momentum=0.9, weight_decay=5e-4)
+        return model, optimizer
+
+    # if args.net == 'MNISTNet':
+    #     for i in range (client):
+    #         Model[i] = MNISTNet()
+    #         Optimizer[i] = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+    #                         momentum=0.9, weight_decay=5e-4)
+    #     global_model = MNISTNet()
+    #     return Model, global_model, Optimizer
+    # elif args.net == 'MobileNet':
+    #     for i in range (client):
+    #         Model = MobileNet()
+    #         Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+    #                     momentum=0.9, weight_decay=5e-4)
+    #     global_model = MobileNet()
+    #     return Model, global_model, Optimizer
+    # elif args.net == 'ResNet18':
+    #     for i in range (client):
+    #         Model = ResNet18()
+    #         Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+    #                     momentum=0.9, weight_decay=5e-4)
+    #     global_model = ResNet18()
+    #     return Model, global_model, Optimizer
+    # elif args.net == 'ResNet50':
+    #     for i in range (client):
+    #         Model = ResNet50()
+    #         Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+    #                     momentum=0.9, weight_decay=5e-4)
+    #     global_model = ResNet50()
+    #     return Model, global_model, Optimizer
+    # elif args.net == 'ResNet101':
+    #     for i in range (client):
+    #         Model = ResNet101()
+    #         Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+    #                     momentum=0.9, weight_decay=5e-4)
+    #     global_model = ResNet101()
+    #     return Model, global_model, Optimizer
+    # elif args.net == 'inception3':
+    #     for i in range (client):
+    #         Model = ()
+    #         Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+    #                     momentum=0.9, weight_decay=5e-4)
+    #     global_model = ResNet101()
+    #     return Model, global_model, Optimizer
+    # elif args.net == 'ResNet101':
+    #     for i in range (client):
+    #         Model = ResNet101()
+    #         Optimizer = torch.optim.SGD(Model.parameters(), lr=args.lr,
+    #                     momentum=0.9, weight_decay=5e-4)
+    #     global_model = ResNet101()
+    #     return Model, global_model, Optimizer
 
 def Train(model, optimizer, client, trainloader):
     print('==> Training model..')
@@ -253,7 +298,7 @@ def run(dataset, client, net):
 
     X, Y, Z = [], [], []
     trainloader, testloader = Set_dataset(dataset, args)
-    model, global_model, optimizer = Set_model(client, args)
+    model, optimizer = Set_model(client, args)
     # pbar = tqdm(range(args.epoch))
     start_time = 0
     # for i in pbar:
@@ -282,49 +327,56 @@ def run(dataset, client, net):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    step = 20
+    step = 100
     # with optimization
 
-    # Model = [None for i in range (step)]
-    # Trainloader = [None for i in range (step)]
-    # Optimizer = [None for i in range (step)]
-    # Client = [None for i in range (step)]
-    # for i in range (step):
-    #     if i%4 == 0: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
-    #     elif i%4 == 1: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
-    #     elif i%4 == 2: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
-    #     elif i%4 == 3: Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
+    Model = [None for i in range (step)]
+    Trainloader = [None for i in range (step)]
+    Optimizer = [None for i in range (step)]
+    Client = [None for i in range (step)]
+    for i in range (step):
+        j = random.randint(0,6)
+        if j == 1: network = 'vgg'
+        elif j == 2: network = 'resnet18'
+        elif j == 3: network = 'resnet50'
+        elif j == 4: network = 'resnet101'
+        elif j == 5: network = 'inception3'
+        elif j == 6: network = 'mobilenet'
+        Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = net)
 
-    # for i in range (step):
-    #     if i%4 == 0: 
-    #         Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
-    #         torch.cuda.empty_cache()
-    #     elif i%4 == 1: 
-    #         Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
-    #         torch.cuda.empty_cache()
-    #     elif i%4 == 2: 
-    #         Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
-    #         torch.cuda.empty_cache()
-    #     elif i%4 == 3: 
-    #         Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
-    #         torch.cuda.empty_cache()
+    for i in range (step):
+        Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
+        torch.cuda.empty_cache()
+
+        # if i%4 == 0: 
+        #     Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
+        #     torch.cuda.empty_cache()
+        # elif i%4 == 1: 
+        #     Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
+        #     torch.cuda.empty_cache()
+        # elif i%4 == 2: 
+        #     Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
+        #     torch.cuda.empty_cache()
+        # elif i%4 == 3: 
+        #     Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
+        #     torch.cuda.empty_cache()
 
 
     # without optimization
-    for i in range (step):
-        if i%4 == 0: 
-            Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
-            Train(Model, Optimizer, Client, Trainloader)
-            torch.cuda.empty_cache()
-        elif i%4 == 1: 
-            Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
-            Train(Model, Optimizer, Client, Trainloader)
-            torch.cuda.empty_cache()
-        elif i%4 == 2: 
-            Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
-            Train(Model, Optimizer, Client, Trainloader)
-            torch.cuda.empty_cache()
-        elif i%4 == 3: 
-            Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
-            Train(Model, Optimizer, Client, Trainloader)
-            torch.cuda.empty_cache()
+    # for i in range (step):
+    #     if i%4 == 0: 
+    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+    #         Train(Model, Optimizer, Client, Trainloader)
+    #         torch.cuda.empty_cache()
+    #     elif i%4 == 1: 
+    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
+    #         Train(Model, Optimizer, Client, Trainloader)
+    #         torch.cuda.empty_cache()
+    #     elif i%4 == 2: 
+    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
+    #         Train(Model, Optimizer, Client, Trainloader)
+    #         torch.cuda.empty_cache()
+    #     elif i%4 == 3: 
+    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
+    #         Train(Model, Optimizer, Client, Trainloader)
+    #         torch.cuda.empty_cache()
