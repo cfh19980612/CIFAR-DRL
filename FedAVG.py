@@ -282,7 +282,7 @@ def run(dataset, client, net):
     # dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    step = 100
+    step = 20
     # with optimization
 
     Model = [None for i in range (step)]
